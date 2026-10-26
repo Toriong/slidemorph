@@ -1,0 +1,32 @@
+{
+  "name": "slidemorph",
+  "version": "1.0.0",
+  "description": "Insert HEIC, PDF pages, SVG, WebP and AVIF images into Google Slides",
+  "main": "build/Code.js",
+  "scripts": {
+    "build": "tsc && npm run copy-html",
+    "copy-html": "cp src/*.html build/ 2>/dev/null || true",
+    "push": "npm run build && clasp push",
+    "deploy": "npm run build && clasp push && clasp deploy",
+    "test": "jest",
+    "type-check": "tsc --noEmit"
+  },
+  "keywords": [
+    "google-slides",
+    "apps-script",
+    "image-conversion"
+  ],
+  "author": "Toriong",
+  "license": "MIT",
+  "devDependencies": {
+    "@google/clasp": "^2.4.2",
+    "@types/google-apps-script": "^1.0.83",
+    "@types/jest": "^29.5.11",
+    "@types/node": "^20.10.6",
+    "canvas": "^3.2.3",
+    "jest": "^29.7.0",
+    "playwright": "^1.64.1",
+    "ts-jest": "^29.1.1",
+    "typescript": "^5.3.3"
+  }
+}
