@@ -1,0 +1,13 @@
+Demo Video 3: PDF Page Picker
+Duration: ~25 seconds
+
+Shows:
+- Selecting a PDF file
+- PDF page thumbnails appearing
+- Selecting a specific page
+- Processing and inserting on slide
+- Final result on slide
+
+This is a placeholder. For production, record a real demo using:
+- Screen recording software
+- Or regenerate with a working Playwright script

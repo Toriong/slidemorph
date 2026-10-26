@@ -1,0 +1,12 @@
+Demo Video 1: Onboarding
+Duration: ~20 seconds
+
+Shows:
+- Opening SlideMorph from the Add-ons menu
+- Welcome screen with feature list
+- Drive I/O promotion
+- Getting started button
+
+This is a placeholder. For production, record a real demo using:
+- Screen recording software
+- Or regenerate with a working Playwright script
