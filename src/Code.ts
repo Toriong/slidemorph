@@ -3,9 +3,7 @@
  * Converts unsupported formats to PNG client-side and inserts them into slides
  */
 
-const PROPERTIES_KEY = 'hasSeenOnboarding';
-const DRIVE_IO_HOME = 'https://www.driveio.io/?referrer=SlideMorph';
-const DRIVE_IO_COPY_FOLDER = 'https://www.driveio.io/standalone-plans/copy-folder-in-google-drive-extension?referrer=SlideMorph';
+import { PROPERTIES_KEY, DRIVE_IO_HOME, DRIVE_IO_COPY_FOLDER } from './constants';
 
 /**
  * Called when add-on is installed

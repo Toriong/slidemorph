@@ -26,10 +26,10 @@ SlideMorph is a free Google Workspace Editor add-on for Google Slides that enabl
 
 - **Runtime**: Google Apps Script (V8)
 - **Language**: TypeScript
-- **Build**: Webpack + gas-webpack-plugin
+- **Build**: TypeScript Compiler (tsc)
 - **Deploy**: clasp (Command Line Apps Script Projects)
 - **UI**: HtmlService sidebar
-- **Client Libraries**:
+- **Client Libraries** (loaded via CDN in sidebar):
   - libheif-js (HEIC/HEIF conversion)
   - PDF.js (PDF rendering)
   - Canvas API (SVG/WebP/AVIF conversion)
@@ -40,26 +40,32 @@ SlideMorph is a free Google Workspace Editor add-on for Google Slides that enabl
 slidemorph/
 ├── src/
 │   ├── Code.ts                 # Main Apps Script code (server-side)
-│   └── Sidebar.html            # Sidebar UI with conversion logic
-├── dist/                       # Built output (created by webpack)
-├── assets/                     # Marketplace assets
-│   ├── icon-128.png           # App icon (128x128)
-│   ├── icon-32.png            # App icon (32x32)
-│   ├── screenshot-*.png       # Marketplace screenshots (4)
-│   ├── banner-220x140.png     # Marketplace banner
-│   ├── card-banner.png        # Marketplace card banner
-│   └── demo-*.txt             # Demo video placeholders
+│   ├── Sidebar.html            # Sidebar UI with conversion logic
+│   └── constants.ts            # App constants and Drive I/O URLs
+├── build/                      # Built output (created by tsc)
+├── branding/                   # Branding assets
+│   ├── logo-128.png
+│   ├── logo-96.png
+│   ├── logo-32.png
+│   ├── slidemorph-512.png
+│   ├── slidemorph.svg
+│   ├── slidemorph-small.svg
+│   └── card-banner-220x140.png
+├── demo/
+│   └── videos/                # Demo videos (MP4)
+├── assets/                     # Additional assets
+│   └── screenshot-*.png       # Marketplace screenshots
 ├── store-assets/
 │   └── listing.md             # Marketplace listing copy
 ├── tests/
 │   └── imageProcessing.test.ts # Unit tests
 ├── scripts/
 │   ├── generateAssets.ts      # Asset generation script
-│   └── generateDemoVideos.ts  # Video generation script
+│   └── recordDemoVideos.js    # Video generation script
 ├── package.json
 ├── tsconfig.json
-├── webpack.config.js
 ├── appsscript.json            # Apps Script manifest
+├── PRIVACY.md                 # Privacy policy
 └── .claspignore               # Files to ignore when pushing
 
 ```
@@ -91,14 +97,10 @@ slidemorph/
    
    This creates a `.clasp.json` file with your script ID.
 
-4. **Build the project:**
+4. **Build and push:**
    ```bash
-   npm run build
-   ```
-
-5. **Push to Apps Script:**
-   ```bash
-   clasp push
+   npm run build  # Compiles TypeScript and copies HTML
+   npm run push   # Builds and pushes to Apps Script
    ```
 
 6. **Open in Apps Script editor:**
@@ -109,13 +111,12 @@ slidemorph/
 ### Development Workflow
 
 1. **Make changes** to TypeScript files in `src/`
-2. **Build**: `npm run build`
-3. **Push**: `clasp push`
-4. **Test** in the Apps Script editor
+2. **Build and push**: `npm run push`
+3. **Test** in the Apps Script editor
 
-For continuous development:
+To deploy a new version:
 ```bash
-npm run watch  # Auto-rebuild on changes
+npm run deploy  # Builds, pushes, and creates deployment
 ```
 
 ## Testing

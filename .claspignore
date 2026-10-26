@@ -1,4 +1,3 @@
 **/**
-!dist/**
+!build/**
 !appsscript.json
-!src/**/*.html

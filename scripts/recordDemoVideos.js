@@ -216,6 +216,10 @@ async function recordVideo2_InsertImage(outputPath) {
     if (onboarding) onboarding.classList.add('hidden');
   });
   
+  await page.waitForTimeout(2000);
+  
+  // Hover over file input area
+  await page.hover('#dropZone').catch(() => {});
   await page.waitForTimeout(1500);
   
   // Simulate file selection
@@ -238,11 +242,18 @@ async function recordVideo2_InsertImage(outputPath) {
     if (actionButtons) actionButtons.classList.remove('hidden');
   });
   
-  await page.waitForTimeout(3000);
+  await page.waitForTimeout(3500);
+  
+  // Scroll sidebar to see action buttons
+  await page.evaluate(() => {
+    const sidebar = document.getElementById('sidebar');
+    if (sidebar) sidebar.scrollTop = 200;
+  });
+  await page.waitForTimeout(1500);
   
   // Click Process & Insert
   await page.click('button:has-text("Process & Insert")').catch(() => {});
-  await page.waitForTimeout(1000);
+  await page.waitForTimeout(1500);
   
   // Show processing
   await page.evaluate(() => {
@@ -252,7 +263,7 @@ async function recordVideo2_InsertImage(outputPath) {
     }
   });
   
-  await page.waitForTimeout(2000);
+  await page.waitForTimeout(2500);
   
   // Show success and insert image
   await page.evaluate(() => {
@@ -267,7 +278,22 @@ async function recordVideo2_InsertImage(outputPath) {
     }
   });
   
-  await page.waitForTimeout(3000);
+  await page.waitForTimeout(3500);
+  
+  // Show final result on slide with animation
+  await page.evaluate(() => {
+    const slideContent = document.getElementById('slideContent');
+    if (slideContent && slideContent.firstChild) {
+      const img = slideContent.firstChild;
+      img.style.transform = 'scale(0.95)';
+      setTimeout(() => {
+        img.style.transition = 'transform 0.3s ease';
+        img.style.transform = 'scale(1)';
+      }, 100);
+    }
+  });
+  
+  await page.waitForTimeout(2000);
   
   await context.close();
   await browser.close();
