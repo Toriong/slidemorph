@@ -86,7 +86,7 @@ slidemorph/
 
 3. **Create a new Apps Script project:**
    ```bash
-   clasp create --type sheets --title "SlideMorph"
+   clasp create --type slides --title "SlideMorph"
    ```
    
    This creates a `.clasp.json` file with your script ID.
