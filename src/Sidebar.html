@@ -1,0 +1,719 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <base target="_top">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>SlideMorph</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Google Sans', 'Roboto', Arial, sans-serif;
+      background: linear-gradient(135deg, rgba(209,127,247,1) 0%, rgba(157,214,252,1) 100%);
+      min-height: 100vh;
+      padding: 16px;
+      color: #202124;
+    }
+
+    .container {
+      background: white;
+      border-radius: 12px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+      padding: 20px;
+      margin-bottom: 16px;
+    }
+
+    h1 {
+      font-size: 24px;
+      font-weight: 500;
+      margin-bottom: 8px;
+      background: linear-gradient(135deg, rgba(209,127,247,1) 0%, rgba(157,214,252,1) 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    .subtitle {
+      font-size: 14px;
+      color: #5f6368;
+      margin-bottom: 20px;
+    }
+
+    .welcome-card {
+      background: linear-gradient(135deg, rgba(209,127,247,0.1) 0%, rgba(157,214,252,0.1) 100%);
+      border: 2px solid rgba(157,214,252,1);
+      border-radius: 8px;
+      padding: 16px;
+      margin-bottom: 20px;
+    }
+
+    .welcome-card h2 {
+      font-size: 18px;
+      font-weight: 500;
+      margin-bottom: 8px;
+      color: #7b2cbf;
+    }
+
+    .welcome-card p {
+      font-size: 14px;
+      color: #5f6368;
+      line-height: 1.5;
+      margin-bottom: 12px;
+    }
+
+    .welcome-card ul {
+      margin-left: 20px;
+      margin-bottom: 12px;
+    }
+
+    .welcome-card li {
+      font-size: 14px;
+      color: #5f6368;
+      margin-bottom: 4px;
+    }
+
+    .file-input-wrapper {
+      position: relative;
+      margin-bottom: 16px;
+    }
+
+    .file-input-label {
+      display: block;
+      padding: 40px 20px;
+      background: #f8f9fa;
+      border: 2px dashed rgba(157,214,252,1);
+      border-radius: 8px;
+      text-align: center;
+      cursor: pointer;
+      transition: all 0.3s;
+    }
+
+    .file-input-label:hover {
+      background: rgba(157,214,252,0.1);
+      border-color: rgba(209,127,247,1);
+    }
+
+    .file-input-label.dragover {
+      background: rgba(157,214,252,0.2);
+      border-color: rgba(209,127,247,1);
+    }
+
+    #fileInput {
+      display: none;
+    }
+
+    .file-icon {
+      font-size: 48px;
+      margin-bottom: 8px;
+    }
+
+    .file-text {
+      font-size: 14px;
+      color: #5f6368;
+    }
+
+    .button-group {
+      display: flex;
+      gap: 8px;
+      margin-bottom: 16px;
+    }
+
+    button {
+      flex: 1;
+      padding: 12px 20px;
+      border: none;
+      border-radius: 8px;
+      font-size: 14px;
+      font-weight: 500;
+      cursor: pointer;
+      transition: all 0.3s;
+      font-family: inherit;
+    }
+
+    .btn-primary {
+      background: linear-gradient(135deg, rgba(209,127,247,1) 0%, rgba(157,214,252,1) 100%);
+      color: white;
+    }
+
+    .btn-primary:hover:not(:disabled) {
+      transform: translateY(-2px);
+      box-shadow: 0 4px 12px rgba(157,214,252,0.4);
+    }
+
+    .btn-secondary {
+      background: white;
+      color: rgb(202, 160, 250);
+      border: 2px solid rgb(202, 160, 250);
+    }
+
+    .btn-secondary:hover:not(:disabled) {
+      background: rgba(202, 160, 250, 0.1);
+    }
+
+    button:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+    }
+
+    .preview-container {
+      margin: 16px 0;
+      display: none;
+    }
+
+    .preview-container.show {
+      display: block;
+    }
+
+    .preview-image {
+      max-width: 100%;
+      border-radius: 8px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    }
+
+    .preview-info {
+      margin-top: 8px;
+      font-size: 12px;
+      color: #5f6368;
+    }
+
+    .pdf-page-selector {
+      margin: 16px 0;
+      display: none;
+    }
+
+    .pdf-page-selector.show {
+      display: block;
+    }
+
+    .pdf-page-selector label {
+      display: block;
+      font-size: 14px;
+      color: #5f6368;
+      margin-bottom: 8px;
+    }
+
+    .pdf-page-selector input {
+      width: 100%;
+      padding: 8px;
+      border: 2px solid #e8eaed;
+      border-radius: 8px;
+      font-size: 14px;
+    }
+
+    .status {
+      padding: 12px;
+      border-radius: 8px;
+      margin-bottom: 16px;
+      display: none;
+      font-size: 14px;
+    }
+
+    .status.show {
+      display: block;
+    }
+
+    .status.success {
+      background: #e6f4ea;
+      color: #137333;
+      border: 1px solid #81c995;
+    }
+
+    .status.error {
+      background: #fce8e6;
+      color: #c5221f;
+      border: 1px solid #f28b82;
+    }
+
+    .status.info {
+      background: #e8f0fe;
+      color: #185abc;
+      border: 1px solid #8ab4f8;
+    }
+
+    .footer {
+      background: white;
+      border-radius: 12px;
+      padding: 16px;
+      text-align: center;
+      font-size: 12px;
+      color: #5f6368;
+    }
+
+    .footer a {
+      color: rgb(202, 160, 250);
+      text-decoration: none;
+      font-weight: 500;
+    }
+
+    .footer a:hover {
+      text-decoration: underline;
+    }
+
+    .promo {
+      background: linear-gradient(135deg, rgba(209,127,247,0.1) 0%, rgba(157,214,252,0.1) 100%);
+      border-radius: 8px;
+      padding: 12px;
+      margin-top: 12px;
+      font-size: 13px;
+      line-height: 1.5;
+    }
+
+    .promo strong {
+      color: #7b2cbf;
+    }
+
+    .loading {
+      display: none;
+      text-align: center;
+      padding: 20px;
+    }
+
+    .loading.show {
+      display: block;
+    }
+
+    .spinner {
+      border: 3px solid #f3f3f3;
+      border-top: 3px solid rgb(202, 160, 250);
+      border-radius: 50%;
+      width: 40px;
+      height: 40px;
+      animation: spin 1s linear infinite;
+      margin: 0 auto 12px;
+    }
+
+    @keyframes spin {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
+
+    .close-welcome {
+      background: transparent;
+      border: none;
+      color: #5f6368;
+      cursor: pointer;
+      float: right;
+      font-size: 20px;
+      line-height: 1;
+      padding: 0;
+      width: auto;
+    }
+  </style>
+</head>
+<body>
+  <div id="welcomeCard" class="welcome-card" style="display: none;">
+    <button class="close-welcome" onclick="closeWelcome()">×</button>
+    <h2>👋 Welcome to SlideMorph!</h2>
+    <p>Convert and insert images in formats not natively supported by Google Slides:</p>
+    <ul>
+      <li>📸 HEIC photos (iPhone/iPad)</li>
+      <li>📄 PDF pages</li>
+      <li>🎨 SVG, WebP, and AVIF</li>
+    </ul>
+    <p><strong>How it works:</strong> Select a file, and SlideMorph converts it to PNG in your browser—nothing is uploaded anywhere. Then insert or replace images in your slide.</p>
+  </div>
+
+  <div class="container">
+    <h1>SlideMorph</h1>
+    <div class="subtitle">Convert & insert images</div>
+
+    <div class="file-input-wrapper">
+      <label for="fileInput" class="file-input-label" id="fileLabel">
+        <div class="file-icon">📁</div>
+        <div class="file-text">
+          <strong>Choose or drag a file</strong><br>
+          HEIC, PDF, SVG, WebP, or AVIF
+        </div>
+      </label>
+      <input type="file" id="fileInput" accept=".heic,.heif,.pdf,.svg,.webp,.avif,image/heic,image/heif,application/pdf,image/svg+xml,image/webp,image/avif">
+    </div>
+
+    <div id="pdfPageSelector" class="pdf-page-selector">
+      <label for="pageNumber">PDF Page Number:</label>
+      <input type="number" id="pageNumber" min="1" value="1">
+      <div class="preview-info" id="pdfInfo"></div>
+    </div>
+
+    <div id="previewContainer" class="preview-container">
+      <img id="previewImage" class="preview-image" alt="Preview">
+      <div class="preview-info" id="previewInfo"></div>
+    </div>
+
+    <div id="loading" class="loading">
+      <div class="spinner"></div>
+      <div>Converting image...</div>
+    </div>
+
+    <div id="status" class="status"></div>
+
+    <div class="button-group">
+      <button id="insertBtn" class="btn-primary" disabled onclick="insertImage()">
+        Insert in Slide
+      </button>
+      <button id="replaceBtn" class="btn-secondary" disabled onclick="replaceImage()">
+        Replace Selected
+      </button>
+    </div>
+  </div>
+
+  <div class="footer">
+    <div>
+      <strong>Need more Google Drive tools?</strong>
+    </div>
+    <div class="promo">
+      <strong>Drive I/O</strong> offers powerful automation for Google Drive, including bulk operations, folder copying, and more.
+      <br>
+      <a href="https://www.driveio.io/?referrer=SlideMorph" target="_blank">Learn more</a> |
+      <a href="https://www.driveio.io/standalone-plans/copy-folder-in-google-drive-extension?referrer=SlideMorph" target="_blank">Copy Folder Extension</a>
+    </div>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/pdfjs-dist@3.11.174/build/pdf.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/libheif-js@1.17.6/libheif.min.js"></script>
+
+  <script>
+    let currentBlob = null;
+    let currentFile = null;
+
+    // Check if first run
+    google.script.run
+      .withSuccessHandler(function(isFirst) {
+        if (isFirst) {
+          document.getElementById('welcomeCard').style.display = 'block';
+        }
+      })
+      .isFirstRun();
+
+    function closeWelcome() {
+      document.getElementById('welcomeCard').style.display = 'none';
+    }
+
+    // PDF.js configuration
+    pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdn.jsdelivr.net/npm/pdfjs-dist@3.11.174/build/pdf.worker.min.js';
+
+    const fileInput = document.getElementById('fileInput');
+    const fileLabel = document.getElementById('fileLabel');
+    const previewContainer = document.getElementById('previewContainer');
+    const previewImage = document.getElementById('previewImage');
+    const previewInfo = document.getElementById('previewInfo');
+    const insertBtn = document.getElementById('insertBtn');
+    const replaceBtn = document.getElementById('replaceBtn');
+    const status = document.getElementById('status');
+    const loading = document.getElementById('loading');
+    const pdfPageSelector = document.getElementById('pdfPageSelector');
+    const pageNumber = document.getElementById('pageNumber');
+    const pdfInfo = document.getElementById('pdfInfo');
+
+    // Drag and drop
+    fileLabel.addEventListener('dragover', (e) => {
+      e.preventDefault();
+      fileLabel.classList.add('dragover');
+    });
+
+    fileLabel.addEventListener('dragleave', () => {
+      fileLabel.classList.remove('dragover');
+    });
+
+    fileLabel.addEventListener('drop', (e) => {
+      e.preventDefault();
+      fileLabel.classList.remove('dragover');
+      if (e.dataTransfer.files.length) {
+        fileInput.files = e.dataTransfer.files;
+        handleFileSelect({ target: fileInput });
+      }
+    });
+
+    fileInput.addEventListener('change', handleFileSelect);
+    pageNumber.addEventListener('change', () => {
+      if (currentFile && currentFile.type === 'application/pdf') {
+        convertFile(currentFile);
+      }
+    });
+
+    async function handleFileSelect(event) {
+      const file = event.target.files[0];
+      if (!file) return;
+
+      currentFile = file;
+      hideStatus();
+      await convertFile(file);
+    }
+
+    async function convertFile(file) {
+      try {
+        loading.classList.add('show');
+        previewContainer.classList.remove('show');
+        pdfPageSelector.classList.remove('show');
+        insertBtn.disabled = true;
+        replaceBtn.disabled = true;
+
+        const fileName = file.name.toLowerCase();
+        let dataUrl;
+
+        if (fileName.endsWith('.heic') || fileName.endsWith('.heif')) {
+          dataUrl = await convertHEIC(file);
+        } else if (fileName.endsWith('.pdf')) {
+          const page = parseInt(pageNumber.value) || 1;
+          dataUrl = await convertPDF(file, page);
+          pdfPageSelector.classList.add('show');
+        } else if (fileName.endsWith('.svg')) {
+          dataUrl = await convertSVG(file);
+        } else if (fileName.endsWith('.webp')) {
+          dataUrl = await convertWebP(file);
+        } else if (fileName.endsWith('.avif')) {
+          dataUrl = await convertAVIF(file);
+        } else {
+          throw new Error('Unsupported file format');
+        }
+
+        // Check size and dimensions
+        const img = new Image();
+        await new Promise((resolve, reject) => {
+          img.onload = resolve;
+          img.onerror = reject;
+          img.src = dataUrl;
+        });
+
+        const width = img.width;
+        const height = img.height;
+        const megapixels = (width * height) / 1000000;
+
+        // Downscale if needed (max 25 megapixels)
+        if (megapixels > 25) {
+          const scale = Math.sqrt(25 / megapixels);
+          dataUrl = await downscaleImage(img, scale);
+          showStatus(`Image downscaled to fit 25 megapixel limit (${Math.round(img.width * scale)}x${Math.round(img.height * scale)})`, 'info');
+        }
+
+        // Convert to blob and check size (max 50 MB)
+        const blob = dataURLtoBlob(dataUrl);
+        const sizeMB = blob.size / (1024 * 1024);
+
+        if (sizeMB > 50) {
+          throw new Error(`Image is too large (${sizeMB.toFixed(1)} MB). Maximum is 50 MB.`);
+        }
+
+        currentBlob = dataUrl;
+        previewImage.src = dataUrl;
+        previewInfo.textContent = `${width}x${height} • ${sizeMB.toFixed(2)} MB`;
+        previewContainer.classList.add('show');
+        insertBtn.disabled = false;
+        replaceBtn.disabled = false;
+
+      } catch (error) {
+        console.error('Conversion error:', error);
+        showStatus(`Error: ${error.message}`, 'error');
+      } finally {
+        loading.classList.remove('show');
+      }
+    }
+
+    async function convertHEIC(file) {
+      const arrayBuffer = await file.arrayBuffer();
+      const decoder = new libheif.HeifDecoder();
+      const data = decoder.decode(new Uint8Array(arrayBuffer));
+      
+      if (!data || data.length === 0) {
+        throw new Error('Failed to decode HEIC file');
+      }
+
+      const image = data[0];
+      const width = image.get_width();
+      const height = image.get_height();
+      
+      const canvas = document.createElement('canvas');
+      canvas.width = width;
+      canvas.height = height;
+      const ctx = canvas.getContext('2d');
+      
+      const imageData = ctx.createImageData(width, height);
+      await new Promise((resolve, reject) => {
+        image.display(imageData, (displayData) => {
+          if (!displayData) {
+            reject(new Error('Failed to display HEIC image'));
+            return;
+          }
+          ctx.putImageData(displayData, 0, 0);
+          resolve();
+        });
+      });
+      
+      return canvas.toDataURL('image/png');
+    }
+
+    async function convertPDF(file, pageNum) {
+      const arrayBuffer = await file.arrayBuffer();
+      const pdf = await pdfjsLib.getDocument({ data: arrayBuffer }).promise;
+      
+      pdfInfo.textContent = `Total pages: ${pdf.numPages}`;
+      pageNumber.max = pdf.numPages;
+      
+      if (pageNum > pdf.numPages) {
+        pageNum = 1;
+        pageNumber.value = 1;
+      }
+      
+      const page = await pdf.getPage(pageNum);
+      const viewport = page.getViewport({ scale: 2 });
+      
+      const canvas = document.createElement('canvas');
+      canvas.width = viewport.width;
+      canvas.height = viewport.height;
+      const ctx = canvas.getContext('2d');
+      
+      await page.render({
+        canvasContext: ctx,
+        viewport: viewport
+      }).promise;
+      
+      return canvas.toDataURL('image/png');
+    }
+
+    async function convertSVG(file) {
+      const text = await file.text();
+      const blob = new Blob([text], { type: 'image/svg+xml' });
+      const url = URL.createObjectURL(blob);
+      
+      const img = new Image();
+      await new Promise((resolve, reject) => {
+        img.onload = resolve;
+        img.onerror = reject;
+        img.src = url;
+      });
+      
+      const canvas = document.createElement('canvas');
+      canvas.width = img.width || 1000;
+      canvas.height = img.height || 1000;
+      const ctx = canvas.getContext('2d');
+      ctx.drawImage(img, 0, 0);
+      
+      URL.revokeObjectURL(url);
+      return canvas.toDataURL('image/png');
+    }
+
+    async function convertWebP(file) {
+      return await convertImageFormat(file);
+    }
+
+    async function convertAVIF(file) {
+      return await convertImageFormat(file);
+    }
+
+    async function convertImageFormat(file) {
+      const url = URL.createObjectURL(file);
+      const img = new Image();
+      
+      await new Promise((resolve, reject) => {
+        img.onload = resolve;
+        img.onerror = reject;
+        img.src = url;
+      });
+      
+      const canvas = document.createElement('canvas');
+      canvas.width = img.width;
+      canvas.height = img.height;
+      const ctx = canvas.getContext('2d');
+      ctx.drawImage(img, 0, 0);
+      
+      URL.revokeObjectURL(url);
+      return canvas.toDataURL('image/png');
+    }
+
+    async function downscaleImage(img, scale) {
+      const canvas = document.createElement('canvas');
+      canvas.width = Math.round(img.width * scale);
+      canvas.height = Math.round(img.height * scale);
+      const ctx = canvas.getContext('2d');
+      ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+      return canvas.toDataURL('image/png');
+    }
+
+    function dataURLtoBlob(dataUrl) {
+      const arr = dataUrl.split(',');
+      const mime = arr[0].match(/:(.*?);/)[1];
+      const bstr = atob(arr[1]);
+      let n = bstr.length;
+      const u8arr = new Uint8Array(n);
+      while (n--) {
+        u8arr[n] = bstr.charCodeAt(n);
+      }
+      return new Blob([u8arr], { type: mime });
+    }
+
+    function insertImage() {
+      if (!currentBlob) return;
+      
+      insertBtn.disabled = true;
+      replaceBtn.disabled = true;
+      showStatus('Inserting image...', 'info');
+
+      google.script.run
+        .withSuccessHandler(function(result) {
+          if (result.success) {
+            showStatus(result.message, 'success');
+            showDriveIOPromo();
+          } else {
+            showStatus(result.message, 'error');
+          }
+          insertBtn.disabled = false;
+          replaceBtn.disabled = false;
+        })
+        .withFailureHandler(function(error) {
+          showStatus('Error: ' + error.message, 'error');
+          insertBtn.disabled = false;
+          replaceBtn.disabled = false;
+        })
+        .insertImage(currentBlob, 'image/png');
+    }
+
+    function replaceImage() {
+      if (!currentBlob) return;
+      
+      insertBtn.disabled = true;
+      replaceBtn.disabled = true;
+      showStatus('Replacing image...', 'info');
+
+      google.script.run
+        .withSuccessHandler(function(result) {
+          if (result.success) {
+            showStatus(result.message, 'success');
+            showDriveIOPromo();
+          } else {
+            showStatus(result.message, 'error');
+          }
+          insertBtn.disabled = false;
+          replaceBtn.disabled = false;
+        })
+        .withFailureHandler(function(error) {
+          showStatus('Error: ' + error.message, 'error');
+          insertBtn.disabled = false;
+          replaceBtn.disabled = false;
+        })
+        .replaceImage(currentBlob, 'image/png');
+    }
+
+    function showStatus(message, type) {
+      status.textContent = message;
+      status.className = 'status show ' + type;
+    }
+
+    function hideStatus() {
+      status.className = 'status';
+    }
+
+    function showDriveIOPromo() {
+      setTimeout(() => {
+        if (Math.random() < 0.3) {
+          const promoMsg = 'Want to do more with Google Drive? Check out Drive I/O for advanced automation tools.';
+          showStatus(promoMsg, 'info');
+        }
+      }, 2000);
+    }
+  </script>
+</body>
+</html>
